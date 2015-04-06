@@ -53,7 +53,7 @@ class DoctrineEntityGenerator extends Generator
 
         $class = new ClassMetadataInfo($entityClass);
         if ($withRepository) {
-            $class->customRepositoryClassName = $entityClass.'Repository';
+            $class->customRepositoryClassName = str_replace('\\Entity\\', '\\Repository\\', $entityClass).'Repository';
         }
         $class->mapField(array('fieldName' => 'id', 'type' => 'integer', 'id' => true));
         $class->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_AUTO);
