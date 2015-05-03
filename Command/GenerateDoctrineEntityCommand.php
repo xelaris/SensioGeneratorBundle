@@ -89,10 +89,24 @@ EOT
 
         $bundle = $this->getContainer()->get('kernel')->getBundle($bundle);
 
+        /** @var DoctrineEntityGenerator $generator */
         $generator = $this->getGenerator();
-        $generator->generate($bundle, $entity, $format, array_values($fields));
+        $generatorResult = $generator->generate($bundle, $entity, $format, array_values($fields));
 
-        $output->writeln('Generating the entity code: <info>OK</info>');
+        $output->writeln(sprintf(
+            '> Generating entity class <info>%s</info>: <comment>OK!</comment>',
+            $this->makePathRelative($generatorResult->getEntityPath())
+        ));
+        $output->writeln(sprintf(
+            '> Generating repository class <info>%s</info>: <comment>OK!</comment>',
+            $this->makePathRelative($generatorResult->getRepositoryPath())
+        ));
+        if ($generatorResult->getMappingPath()) {
+            $output->writeln(sprintf(
+                '> Generating mapping file <info>%s</info>: <comment>OK!</comment>',
+                $this->makePathRelative($generatorResult->getMappingPath())
+            ));
+        }
 
         $questionHelper->writeGeneratorSummary($output, array());
     }

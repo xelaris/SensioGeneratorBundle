@@ -401,19 +401,6 @@ EOT
         );
     }
 
-    /**
-     * Tries to make a path relative to the project, which prints nicer
-     *
-     * @param string $absolutePath
-     * @return string
-     */
-    protected function makePathRelative($absolutePath)
-    {
-        $projectRootDir = dirname($this->getContainer()->getParameter('kernel.root_dir'));
-
-        return str_replace($projectRootDir.'/', '', $absolutePath);
-    }
-
     protected function createGenerator()
     {
         return new BundleGenerator($this->getContainer()->get('filesystem'));

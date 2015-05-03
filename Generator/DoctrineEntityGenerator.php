@@ -11,6 +11,7 @@
 
 namespace Sensio\Bundle\GeneratorBundle\Generator;
 
+use Sensio\Bundle\GeneratorBundle\Model\EntityGeneratorResult;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -36,6 +37,16 @@ class DoctrineEntityGenerator extends Generator
         $this->registry = $registry;
     }
 
+    /**
+     * @param BundleInterface $bundle
+     * @param string          $entity
+     * @param string          $format
+     * @param array           $fields
+     *
+     * @return EntityGeneratorResult
+     *
+     * @throws \Doctrine\ORM\Tools\Export\ExportException
+     */
     public function generate(BundleInterface $bundle, $entity, $format, array $fields)
     {
         // configure the bundle (needed if the bundle does not contain any Entities yet)
@@ -88,6 +99,9 @@ class DoctrineEntityGenerator extends Generator
 
         $path = $bundle->getPath().str_repeat('/..', substr_count(get_class($bundle), '\\'));
         $this->getRepositoryGenerator()->writeEntityRepositoryClass($class->customRepositoryClassName, $path);
+        $repositoryPath = $path.DIRECTORY_SEPARATOR.str_replace('\\', DIRECTORY_SEPARATOR, $class->customRepositoryClassName).'.php';
+
+        return new EntityGeneratorResult($entityPath, $repositoryPath, $mappingPath);
     }
 
     public function isReservedKeyword($keyword)
