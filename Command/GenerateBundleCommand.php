@@ -22,7 +22,6 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use Sensio\Bundle\GeneratorBundle\Generator\BundleGenerator;
 use Sensio\Bundle\GeneratorBundle\Manipulator\KernelManipulator;
 use Sensio\Bundle\GeneratorBundle\Manipulator\RoutingManipulator;
-use Sensio\Bundle\GeneratorBundle\Command\Helper\QuestionHelper;
 
 /**
  * Generates bundles.
@@ -360,9 +359,10 @@ EOT
     }
 
     /**
-     * Creates the Bundle object based on the user's (non-interactive) input
+     * Creates the Bundle object based on the user's (non-interactive) input.
      *
      * @param InputInterface $input
+     *
      * @return Bundle
      */
     protected function createBundleObject(InputInterface $input)
