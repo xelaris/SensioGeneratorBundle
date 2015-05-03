@@ -37,7 +37,6 @@ class GenerateDoctrineEntityCommand extends GenerateDoctrineCommand
             ->addOption('entity', null, InputOption::VALUE_REQUIRED, 'The entity class name to initialize (shortcut notation)')
             ->addOption('fields', null, InputOption::VALUE_REQUIRED, 'The fields to create with the new entity')
             ->addOption('format', null, InputOption::VALUE_REQUIRED, 'Use the format for configuration files (php, xml, yml, or annotation)', 'annotation')
-            ->addOption('with-repository', null, InputOption::VALUE_NONE, 'Whether to generate the entity repository or not')
             ->setHelp(<<<EOT
 The <info>doctrine:generate:entity</info> task generates a new Doctrine
 entity inside a bundle:
@@ -51,11 +50,6 @@ You can also optionally specify the fields you want to generate in the new
 entity:
 
 <info>php app/console doctrine:generate:entity --entity=AcmeBlogBundle:Blog/Post --fields="title:string(255) body:text"</info>
-
-The command can also generate the corresponding entity repository class with the
-<comment>--with-repository</comment> option:
-
-<info>php app/console doctrine:generate:entity --entity=AcmeBlogBundle:Blog/Post --with-repository</info>
 
 By default, the command uses annotations for the mapping information; change it
 with <comment>--format</comment>:
@@ -96,7 +90,7 @@ EOT
         $bundle = $this->getContainer()->get('kernel')->getBundle($bundle);
 
         $generator = $this->getGenerator();
-        $generator->generate($bundle, $entity, $format, array_values($fields), $input->getOption('with-repository'));
+        $generator->generate($bundle, $entity, $format, array_values($fields));
 
         $output->writeln('Generating the entity code: <info>OK</info>');
 
@@ -165,12 +159,6 @@ EOT
 
         // fields
         $input->setOption('fields', $this->addFields($input, $output, $questionHelper));
-
-        // repository?
-        $output->writeln('');
-        $question = new ConfirmationQuestion($questionHelper->getQuestion('Do you want to generate an empty repository class', $input->getOption('with-repository') ? 'yes' : 'no', '?'), $input->getOption('with-repository'));
-        $withRepository = $questionHelper->ask($input, $output, $question);
-        $input->setOption('with-repository', $withRepository);
 
         // summary
         $output->writeln(array(

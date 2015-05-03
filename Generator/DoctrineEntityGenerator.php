@@ -36,7 +36,7 @@ class DoctrineEntityGenerator extends Generator
         $this->registry = $registry;
     }
 
-    public function generate(BundleInterface $bundle, $entity, $format, array $fields, $withRepository)
+    public function generate(BundleInterface $bundle, $entity, $format, array $fields)
     {
         // configure the bundle (needed if the bundle does not contain any Entities yet)
         $config = $this->registry->getManager(null)->getConfiguration();
@@ -52,9 +52,7 @@ class DoctrineEntityGenerator extends Generator
         }
 
         $class = new ClassMetadataInfo($entityClass);
-        if ($withRepository) {
-            $class->customRepositoryClassName = str_replace('\\Entity\\', '\\Repository\\', $entityClass).'Repository';
-        }
+        $class->customRepositoryClassName = str_replace('\\Entity\\', '\\Repository\\', $entityClass).'Repository';
         $class->mapField(array('fieldName' => 'id', 'type' => 'integer', 'id' => true));
         $class->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_AUTO);
         foreach ($fields as $field) {
@@ -88,10 +86,8 @@ class DoctrineEntityGenerator extends Generator
             file_put_contents($mappingPath, $mappingCode);
         }
 
-        if ($withRepository) {
-            $path = $bundle->getPath().str_repeat('/..', substr_count(get_class($bundle), '\\'));
-            $this->getRepositoryGenerator()->writeEntityRepositoryClass($class->customRepositoryClassName, $path);
-        }
+        $path = $bundle->getPath().str_repeat('/..', substr_count(get_class($bundle), '\\'));
+        $this->getRepositoryGenerator()->writeEntityRepositoryClass($class->customRepositoryClassName, $path);
     }
 
     public function isReservedKeyword($keyword)
