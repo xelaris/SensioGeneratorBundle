@@ -71,15 +71,6 @@ EOT
     {
         $questionHelper = $this->getQuestionHelper();
 
-        if ($input->isInteractive()) {
-            $question = new ConfirmationQuestion($questionHelper->getQuestion('Do you confirm generation', 'yes', '?'), true);
-            if (!$questionHelper->ask($input, $output, $question)) {
-                $output->writeln('<error>Command aborted</error>');
-
-                return 1;
-            }
-        }
-
         $entity = Validators::validateEntityName($input->getOption('entity'));
         list($bundle, $entity) = $this->parseShortcutNotation($entity);
         $format = Validators::validateFormat($input->getOption('format'));
@@ -173,16 +164,6 @@ EOT
 
         // fields
         $input->setOption('fields', $this->addFields($input, $output, $questionHelper));
-
-        // summary
-        $output->writeln(array(
-            '',
-            $this->getHelper('formatter')->formatBlock('Summary before generation', 'bg=blue;fg=white', true),
-            '',
-            sprintf("You are going to generate a \"<info>%s:%s</info>\" Doctrine2 entity", $bundle, $entity),
-            sprintf("using the \"<info>%s</info>\" format.", $format),
-            '',
-        ));
     }
 
     private function parseFields($input)
